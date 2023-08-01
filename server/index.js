@@ -2,11 +2,18 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 
+const { sequelize } = require("./util/database");
+const { User } = require("./models/user");
+const { Post } = require("./models/post");
+
 const app = express();
 const PORT = process.env.PORT;
 
 app.use(express.json());
 app.use(cors());
+
+User.hasMany(Post);
+Post.belongsTo(User);
 
 const { register, login } = require("./controllers/auth");
 
@@ -32,4 +39,9 @@ app.put("/posts/:id", isAuthenticated, editPost);
 
 app.delete("/posts/:id", isAuthenticated, deletePost);
 
-app.listen(PORT, () => console.log(`Running on Port ${PORT}`));
+sequelize
+  .sync()
+  .then(() => {
+    app.listen(PORT, () => console.log(`Running on Port ${PORT}`));
+  })
+  .catch((err) => console.log(err));
