@@ -18,7 +18,10 @@ const Auth = () => {
       .then((res) => {
         dispatch({ type: "LOGIN", payload: res.data });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.error(err);
+        alert("Try again");
+      });
 
     console.log("submitHandler called");
   };
